@@ -2,12 +2,12 @@ const { json } = require('express');
 const express = require('express'); 
 const mongoose = require('mongoose');
 const Auth = require('./models/auth');
-
+const UserMessageInstance = require('./models/userdata');
 const app = express();
 const uri = 'mongodb+srv://Art:Art1234@node-practice.jknzmex.mongodb.net/Project_Note';
 mongoose.connect(uri,{ useNewUrlParser: true, useUnifiedTopology: true }).then((data)=>{console.log('Connected');app.listen(3000);}).catch((err)=>{console.log(err)});
-
-
+var SessionUserName = 'Lucifer';
+//module.exports = { UserName: SessionUserName };
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -58,6 +58,7 @@ app.post('/',(req, res)=>{//requested url
          }
          else if(obj.password.toString() == req.body.password.toString())
          {
+            SessionUserName = username;
             _responsemessage = "OK";
          }
          else if (obj.password != req.body.password)
@@ -76,3 +77,27 @@ app.post('/',(req, res)=>{//requested url
     }
    
 });
+
+
+app.post('/home', (req, res) =>
+{
+    console.log(req.body);
+    const responseData = {
+        message:"Message Received!"
+    }
+
+      const newInstance = new UserMessageInstance({username: 'Lucifer', text: req.body.message, path: '' }); 
+            newInstance.save().then((result)=>{ const responseData = {
+                message:"Message Stored"
+            }
+            const jsonContent = JSON.stringify(responseData);
+            res.end(jsonContent);
+        
+        }).catch((err)=>{
+        console.log(err);     
+        }
+        );
+
+   
+});
+
