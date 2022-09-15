@@ -1,8 +1,11 @@
 const { json } = require('express');
 const express = require('express'); 
 const mongoose = require('mongoose');
+const http = require('http');
+const url = require('url');
 const Auth = require('./models/auth');
 const UserMessageInstance = require('./models/userdata');
+const querystring = require('querystring');
 const app = express();
 const uri = 'mongodb+srv://Art:Art1234@node-practice.jknzmex.mongodb.net/Project_Note';
 mongoose.connect(uri,{ useNewUrlParser: true, useUnifiedTopology: true }).then((data)=>{console.log('Connected');app.listen(3000);}).catch((err)=>{console.log(err)});
@@ -79,8 +82,13 @@ app.post('/',(req, res)=>{//requested url
 
 
 app.get('/home',(req, res)=>{
-UserMessageInstance.find({username: 'Lucifer'}).limit(15).sort({createdAt: -1}).then((result)=>{
-    console.log(result);
+    const queryObject = url.parse(req.url, true).query;
+    console.log(queryObject);
+var pageno = parseInt(queryObject.pageno);
+var messagesToLoad = parseInt(queryObject.perpage);
+var skipMessages = parseInt(queryObject.skip) + messagesToLoad*pageno;
+UserMessageInstance.find({username: 'Lucifer'}).limit(messagesToLoad).skip(skipMessages).sort({createdAt: -1}).then((result)=>{
+    //console.log(result);
     const jsonContent = JSON.stringify(result);
     res.end(jsonContent);
 });
@@ -90,11 +98,13 @@ UserMessageInstance.find({username: 'Lucifer'}).limit(15).sort({createdAt: -1}).
 app.post('/home', (req, res) =>
 {
     console.log(req.body);
+  
       const newInstance = new UserMessageInstance({username: 'Lucifer', text: req.body.message, path: '' }); 
             newInstance.save().then((result)=>{ const responseData = {
                 message:"Message Stored",
                 result,
             }
+            console.log(result);
             const jsonContent = JSON.stringify(responseData);
             res.end(jsonContent);
         
