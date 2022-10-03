@@ -6,6 +6,8 @@ const url = require('url');
 const Auth = require('./models/auth');
 const UserMessageInstance = require('./models/userdata');
 const querystring = require('querystring');
+
+
 const app = express();
 const uri = 'mongodb+srv://Art:Art1234@node-practice.jknzmex.mongodb.net/Project_Note';
 mongoose.connect(uri,{ useNewUrlParser: true, useUnifiedTopology: true }).then((data)=>{console.log('Connected');app.listen(3000);}).catch((err)=>{console.log(err)});
@@ -97,9 +99,10 @@ UserMessageInstance.find({username: 'Lucifer'}).limit(messagesToLoad).skip(skipM
 
 app.post('/home', (req, res) =>
 {
+    
     console.log(req.body);
-  
-      const newInstance = new UserMessageInstance({username: 'Lucifer', text: req.body.message, path: '' }); 
+
+      const newInstance = new UserMessageInstance({username: 'Lucifer', text: req.body.message, path: req.body.path, mediatype: req.body.mediatype }); 
             newInstance.save().then((result)=>{ const responseData = {
                 message:"Message Stored",
                 result,
