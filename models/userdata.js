@@ -21,6 +21,11 @@ const userMessageSchema = new Schema({
      type: String,
      required: true,
    },
+   isUploaded:
+   {
+    type: String,
+    required: true,
+   }
 }, { timestamps: true }); //so we can know when the blog was last edited / created etc
 
 const UserMessageInstance = mongoose.model('Lucifer', userMessageSchema, 'Lucifer'); //now it will model the schema on the database

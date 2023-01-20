@@ -104,7 +104,7 @@ app.post('/home', (req, res) =>
     
     console.log(req.body);
 
-      const newInstance = new UserMessageInstance({username: 'Lucifer', message: req.body.message, path: req.body.path, mediatype: req.body.mediatype }); 
+      const newInstance = new UserMessageInstance({username: 'Lucifer', message: req.body.message, path: req.body.path, mediatype: req.body.mediatype, isUploaded: 'true' }); 
             newInstance.save().then((result)=>{ const responseData = {
                 message:"Message Stored",
                 result,
