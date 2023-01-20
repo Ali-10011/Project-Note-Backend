@@ -16,6 +16,7 @@ var SessionUserName = 'Lucifer';
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+
 app.post('/',(req, res)=>{//requested url
     if(req.body.authtype == "signup")
     {
@@ -35,6 +36,7 @@ app.post('/',(req, res)=>{//requested url
             res.end(jsonContent);
         
         }).catch((err)=>{
+            
         console.log(err);     
         }
         );
@@ -102,7 +104,7 @@ app.post('/home', (req, res) =>
     
     console.log(req.body);
 
-      const newInstance = new UserMessageInstance({username: 'Lucifer', text: req.body.message, path: req.body.path, mediatype: req.body.mediatype }); 
+      const newInstance = new UserMessageInstance({username: 'Lucifer', message: req.body.message, path: req.body.path, mediatype: req.body.mediatype }); 
             newInstance.save().then((result)=>{ const responseData = {
                 message:"Message Stored",
                 result,
