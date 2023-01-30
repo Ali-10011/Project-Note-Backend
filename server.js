@@ -88,9 +88,8 @@ app.post('/',(req, res)=>{//requested url
 app.get('/home',(req, res)=>{
     const queryObject = url.parse(req.url, true).query;
     console.log(queryObject);
-var pageno = parseInt(queryObject.pageno);
 var messagesToLoad = parseInt(queryObject.perpage);
-var skipMessages = parseInt(queryObject.skip) + messagesToLoad*pageno;
+var skipMessages = parseInt(queryObject.skip);
 UserMessageInstance.find({username: 'Lucifer'}).limit(messagesToLoad).skip(skipMessages).sort({createdAt: -1}).then((result)=>{
     //console.log(result);
     const jsonContent = JSON.stringify(result);
@@ -118,6 +117,5 @@ app.post('/home', (req, res) =>
         }
         );
 
-   
 });
 
