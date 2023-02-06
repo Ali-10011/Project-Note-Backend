@@ -91,7 +91,6 @@ app.get('/home',(req, res)=>{
 var messagesToLoad = parseInt(queryObject.perpage);
 var skipMessages = parseInt(queryObject.skip);
 UserMessageInstance.find({username: 'Lucifer'}).limit(messagesToLoad).skip(skipMessages).sort({createdAt: -1}).then((result)=>{
-    //console.log(result);
     const jsonContent = JSON.stringify(result);
     res.end(jsonContent);
 });
@@ -103,7 +102,7 @@ app.post('/home', (req, res) =>
     
     console.log(req.body);
 
-      const newInstance = new UserMessageInstance({username: 'Lucifer', message: req.body.message, path: req.body.path, mediatype: req.body.mediatype, isUploaded: 'true' }); 
+      const newInstance = new UserMessageInstance({username: 'Lucifer', message: req.body.message, path: req.body.path, mediatype: req.body.mediatype, dateTime: req.body.dateTime ,isUploaded: 'true' }); 
             newInstance.save().then((result)=>{ const responseData = {
                 message:"Message Stored",
                 result,

@@ -21,6 +21,11 @@ const userMessageSchema = new Schema({
      type: String,
      required: true,
    },
+   dateTime: 
+   {
+    type: String,
+    required: true
+   },
    isUploaded:
    {
     type: String,
