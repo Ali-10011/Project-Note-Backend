@@ -1,11 +1,6 @@
-const { json } = require("express");
-const express = require("express");
-const mongoose = require("mongoose");
-const http = require("http");
+
 const url = require("url");
-const Auth = require("../models/auth");
 const UserMessageInstance = require("../models/userdata");
-const querystring = require("querystring");
 
 //getting messages from server
 const getMessages = async (req, res) => {
@@ -38,7 +33,7 @@ const uploadMessage = async (req, res) => {
       res.status(404).json({ error: "No such entry" });
     }
 
-    res.status(200).json(messagee);
+    res.status(200).json(message);
   } catch (e) {
     res.status(500).json({ error: "Internal server error" });
   }

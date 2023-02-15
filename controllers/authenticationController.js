@@ -1,69 +1,101 @@
-const { json } = require("express");
-const express = require("express");
-const mongoose = require("mongoose");
-const http = require("http");
-const url = require("url");
 const Auth = require("../models/auth");
-const querystring = require("querystring");
+const bcrypt = require("bcryptjs");
+var jwt = require("jsonwebtoken");
 
 
-const authenticateUser = async(req, res) =>
+
+const registerUser = async (req, res) =>
 {
-    if (req.body.authtype == "signup") {
-        const username = req.body.username.toString();
-    
-        Auth.findOne({ username: username }, function (err, obj) {
-          if (err) return handleError(err);
-    
-          if (!obj) {
-            //null object means that the user does not exist
-            const newAuth = new Auth({
-              username: req.body.username,
-              password: req.body.password,
-            });
-            newAuth
-              .save()
-              .then((result) => {
-                const responseData = {
-                  message: "OK",
-                };
-                const jsonContent = JSON.stringify(responseData);
-                res.end(jsonContent);
-              })
-              .catch((err) => {
-                console.log(err);
-              });
-          } else {
-            const responseData = {
-              message: "User Already Exists!",
-            };
-            const jsonContent = JSON.stringify(responseData);
-            res.end(jsonContent);
-          }
-        });
-      } else if (req.body.authtype == "login") {
-        const username = req.body.username.toString();
-        var _responsemessage;
-        Auth.findOne({ username: username }, function (err, obj) {
-          if (err) return handleError(err);
-          if (!obj) {
-            _responsemessage = "This User Does not Exist!";
-          } else if (obj.password.toString() == req.body.password.toString()) {
-            SessionUserName = username;
-            _responsemessage = "OK";
-          } else if (obj.password != req.body.password) {
-            _responsemessage = "Wrong Password!";
-          }
-          responseData = {
-            message: _responsemessage,
-          };
-          const jsonContent = JSON.stringify(responseData);
-          res.end(jsonContent);
-        });
+ 
+  try {
+    // Get user input
+    const {username, password } = req.body;
+
+    //Validate user input
+    if (!(username && password)) {
+      res.status(400).send("All input is required");
+    }
+
+    // check if user already exist
+    // Validate if user exist in our database
+    const oldUser = await Auth.findOne({ username });
+
+    if (oldUser) {
+      return res.status(409).send("User Already Exist. Please Login");
+    }
+
+    //Encrypt user password
+    encryptedPassword = await bcrypt.hash(password, 10); //hashing the password
+
+    // Create user in our database
+    const newUser = await Auth.create({  //We will not store the password in database
+      username: username,
+      password: encryptedPassword,
+    });
+   
+    // Create token
+    const token = jwt.sign(
+      { user_id: newUser._id, username },
+      "I am Lucifer",
+      {
+        expiresIn: "2h",
       }
+    );
+
+    // save user token
+    newUser.token = token;
+
+    // return new user
+    res.status(201).json(newUser);
+
+  } catch (err) {
+     res.status(500).json({ msg: "Internal Server ERROR" });
+  }
 }
 
-module.exports = 
+const authenticateUser = async (req, res) => 
 {
-    authenticateUser
+  
+  try {
+    // Get user input
+    const { username, password } = req.body;
+
+    // Validate user input
+    if (!(username&& password)) {
+      res.status(400).send("All input is required");
+    }
+    // Validate if user exist in our database
+    const user = await Auth.findOne({ username });
+
+    if(!user)
+    {
+     
+    }
+
+    if (user && (await bcrypt.compare(password, user.password))) { //comparing the actual password user entered with our hashed password
+      const token = jwt.sign(
+        { user_id: user._id, username },
+        "I am Lucifer",
+        {
+          expiresIn: "2h",
+        }
+      );
+
+      // save user token
+      user.token = token;
+
+      // user
+      res.status(200).json(user);
+      return;
+    }
+     res.status(400).send("Invalid Password");
+  } catch (err) {
+    res.status(500).json({msg: "Internal Server ERROR"});
+  }
+
 }
+
+module.exports = {
+  registerUser,
+  authenticateUser
+};
