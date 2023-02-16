@@ -4,9 +4,10 @@ const UserMessageInstance = require("../models/userdata");
 
 //getting messages from server
 const getMessages = async (req, res) => {
+
   const queryObject = url.parse(req.url, true).query;
   try {
-    const messages = await UserMessageInstance.find({ username: "Lucifer" })
+    const messages = await UserMessageInstance.find({ username: req.username })
       .limit(parseInt(queryObject.perpage))
       .skip(parseInt(queryObject.skip))
       .sort({ createdAt: -1 });
@@ -21,7 +22,7 @@ const getMessages = async (req, res) => {
 const uploadMessage = async (req, res) => {
   try {
     const message = await new UserMessageInstance({
-      username: "Lucifer",
+      username: req.username,
       message: req.body.message,
       path: req.body.path,
       mediatype: req.body.mediatype,

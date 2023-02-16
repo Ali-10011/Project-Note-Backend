@@ -7,19 +7,20 @@ const verifyToken = async (req, res, next) => {
       req.headers.authorization &&
       req.headers.authorization.startsWith("Bearer")
     ) {
-      console.log(req.headers.authorization);
       const token = req.headers.authorization.split(" ")[1];
 
       jwt.verify(token, "I am Lucifer", function (err, decoded) {
         if (err) {
           res.status(401).json({ message: err.message });
         } else {
-          const user = User.findOne({ username: decoded.username });
-          console.log(user)
-          if (user) {
-            req.user = user;
-            next();
-          } 
+          User.findOne({ username: decoded.username }).then((result) => {
+            if (result) {
+              req.username = result.username;
+              next();
+            } else {
+              res.status(404).json({ message: "Could not Find User" });
+            }
+          });
         }
       });
     }

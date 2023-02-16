@@ -38,7 +38,7 @@ const registerUser = async (req, res) =>
       { user_id: newUser._id, username },
       "I am Lucifer",
       {
-        expiresIn: "30s",
+        expiresIn: "5m",
       }
     );
 
@@ -77,7 +77,7 @@ const authenticateUser = async (req, res) =>
         { user_id: user._id, username },
         "I am Lucifer",
         {
-          expiresIn: "30s",
+          expiresIn: "5m",
         }
       );
 
