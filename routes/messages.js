@@ -1,3 +1,4 @@
+const verifyToken = require('../middlewares/verifyToken');
 const express = require("express");
 const {
   getMessages,
@@ -9,13 +10,13 @@ const { registerUser, authenticateUser } = require("../controllers/authenticatio
 const router = express.Router();
 
 //GET messages
-router.get("/home/messages", getMessages);
+router.get("/home/messages", verifyToken, getMessages);
 
 //POST a single message
-router.post("/home/messages", uploadMessage);
+router.post("/home/messages", verifyToken, uploadMessage);
 
 //Delete a single message
-router.delete("/home/messages/:id", deleteMessage);
+router.delete("/home/messages/:id", verifyToken, deleteMessage);
 
 //Authenticate a User
 router.post("/auth/register", registerUser);
