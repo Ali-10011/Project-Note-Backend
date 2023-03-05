@@ -4,6 +4,7 @@ var jwt = require("jsonwebtoken");
 
 
 
+
 const registerUser = async (req, res) =>
 {
  
@@ -38,13 +39,16 @@ const registerUser = async (req, res) =>
       { user_id: newUser._id, username },
       "I am Lucifer",
       {
-        expiresIn: "5m",
+        expiresIn: "2h",
       }
     );
-
-    // save user token
-    newUser.token = token;
-
+ 
+   // save user token
+   var _current = new Date();
+   _current.setMinutes(_current.getMinutes() + 120);
+   newUser.token = token;
+   newUser.tokenExpiry = _current.toISOString();
+    
     // return new user
     res.status(201).json(newUser);
 
@@ -77,13 +81,17 @@ const authenticateUser = async (req, res) =>
         { user_id: user._id, username },
         "I am Lucifer",
         {
-          expiresIn: "5m",
+          expiresIn: "2h",
         }
       );
-
+      
+     
       // save user token
+      var _current = new Date();
+      _current.setMinutes(_current.getMinutes() + 120);
       user.token = token;
-
+      user.tokenExpiry = _current.toISOString();
+       
       // user
       res.status(200).json(user);
       return;

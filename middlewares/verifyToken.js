@@ -12,6 +12,7 @@ const verifyToken = async (req, res, next) => {
       jwt.verify(token, "I am Lucifer", function (err, decoded) {
         if (err) {
           res.status(401).json({ message: err.message });
+          console.log(err);
         } else {
           User.findOne({ username: decoded.username }).then((result) => {
             if (result) {

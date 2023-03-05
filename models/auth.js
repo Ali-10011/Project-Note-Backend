@@ -14,6 +14,10 @@ const authSchema = new Schema(
     token: {
       type: String,
     },
+    tokenExpiry:
+    {
+      type: String
+    }
   },
   { timestamps: true }
 ); //so we can know when the blog was last edited / created etc

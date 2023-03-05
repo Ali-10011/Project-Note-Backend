@@ -4,23 +4,29 @@ const UserMessageInstance = require("../models/userdata");
 
 //getting messages from server
 const getMessages = async (req, res) => {
-
+ 
   const queryObject = url.parse(req.url, true).query;
+  console.log(queryObject);
   try {
     const messages = await UserMessageInstance.find({ username: req.username })
       .limit(parseInt(queryObject.perpage))
       .skip(parseInt(queryObject.skip))
       .sort({ createdAt: -1 });
-
+      console.log(messages);
+     
     res.status(200).json(messages);
   } catch (e) {
+    
     res.status(500).json({ error: "Internal server error" });
   }
 };
 
 //posting a single message
 const uploadMessage = async (req, res) => {
+  
   try {
+    console.log(req.body);
+
     const message = await new UserMessageInstance({
       username: req.username,
       message: req.body.message,
@@ -29,7 +35,8 @@ const uploadMessage = async (req, res) => {
       dateTime: req.body.dateTime,
       isUploaded: "true",
     }).save();
-
+    
+    console.log(message);
     if (!message) {
       res.status(404).json({ error: "No such entry" });
     }

@@ -32,8 +32,8 @@ const userMessageSchema = new Schema(
 ); //so we can know when the blog was last edited / created etc
 
 const UserMessageInstance = mongoose.model(
-  "Lucifer",
+  "Messages",
   userMessageSchema,
-  "Lucifer"
+  "Messages"
 ); //now it will model the schema on the database
 module.exports = UserMessageInstance;
