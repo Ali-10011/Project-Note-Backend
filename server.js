@@ -2,12 +2,13 @@ const { json } = require("express");
 const express = require("express");
 const mongoose = require("mongoose");
 const messagesRoutes = require("./routes/messages");
+require('dotenv').config();
 
-const uri =
-  "mongodb+srv://Art:Art1234@node-practice.jknzmex.mongodb.net/Project_Note";
+
+//Connect to Mongo and Listen
 mongoose
-  .connect(uri, { useNewUrlParser: true, useUnifiedTopology: true})
-
+  .connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true})
+    //Your Mongo DB Connection String here.
   .then((data) => {
     console.log("Connected");
     app.listen(process.env.PORT || 5000);
